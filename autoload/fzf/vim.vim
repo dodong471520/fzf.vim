@@ -220,6 +220,7 @@ function! s:fzf(name, opts, extra)
   let eopts  = has_key(extra, 'options') ? remove(extra, 'options') : ''
   let merged = extend(copy(a:opts), extra)
   call s:merge_opts(merged, eopts)
+  "echom webapi#json#encode(merged)
   return fzf#run(s:wrap(a:name, merged, bang))
 endfunction
 
@@ -654,15 +655,13 @@ function! s:ag_handler(lines, with_column)
 endfunction
 
 " query, [[ag options], options]
-function! fzf#vim#ag(query, ...)
+function! fzf#vim#ag(query,...)
   if type(a:query) != s:TYPE.string
     return s:warn('Invalid query argument')
   endif
-  let query = empty(a:query) ? '^(?=.)' : a:query
-  let args = copy(a:000)
-  let ag_opts = len(args) > 1 && type(args[0]) == s:TYPE.string ? remove(args, 0) : ''
-  let command = ag_opts . ' ' . fzf#shellescape(query)
-  return call('fzf#vim#ag_raw', insert(args, command, 0))
+  let query = a:query . ' ' . fzf#shellescape('^(?=.)')
+  "echom query
+  return call('fzf#vim#ag_raw', [query])
 endfunction
 
 " ag command suffix, [options]
@@ -670,7 +669,7 @@ function! fzf#vim#ag_raw(command_suffix, ...)
   if !executable('ag')
     return s:warn('ag is not found')
   endif
-  return call('fzf#vim#grep', extend(['ag --nogroup --column --color '.a:command_suffix, 1], a:000))
+  return call('fzf#vim#grep', extend(['ag --ignore tags --nogroup --column --color '.a:command_suffix, 1], a:000))
 endfunction
 
 " command, with_column, [options]
