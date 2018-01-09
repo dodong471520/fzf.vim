@@ -220,7 +220,7 @@ function! s:fzf(name, opts, extra)
   let eopts  = has_key(extra, 'options') ? remove(extra, 'options') : ''
   let merged = extend(copy(a:opts), extra)
   call s:merge_opts(merged, eopts)
-  "echom webapi#json#encode(merged)
+  " echom webapi#json#encode(merged)
   return fzf#run(s:wrap(a:name, merged, bang))
 endfunction
 
@@ -843,7 +843,7 @@ function! fzf#vim#tags(query, ...)
   return s:fzf('tags', {
   \ 'source':  fzf#shellescape(s:bin.tags).' '.join(map(tagfiles, 'fzf#shellescape(fnamemodify(v:val, ":p"))')),
   \ 'sink*':   s:function('s:tags_sink'),
-  \ 'options': opts.'--nth 1..2 -m --tiebreak=begin --prompt "Tags> "'.s:q(a:query)}, a:000)
+  \ 'options': opts.'-m --tiebreak=begin --prompt "Tags> "'.s:q(a:query)}, a:000)
 endfunction
 
 " ------------------------------------------------------------------
