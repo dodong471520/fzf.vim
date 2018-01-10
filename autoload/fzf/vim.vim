@@ -689,6 +689,7 @@ function! fzf#vim#grep(grep_command, with_column, ...)
   \ 'column':  a:with_column,
   \ 'options': ['--ansi', '--prompt', capname.'> ',
   \             '--multi', '--bind', 'alt-a:select-all,alt-d:deselect-all',
+  \             '--nth=2..',
   \             '--color', 'hl:68,hl+:110']
   \}
   function! opts.sink(lines)
