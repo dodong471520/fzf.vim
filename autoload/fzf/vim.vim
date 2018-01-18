@@ -659,8 +659,8 @@ function! fzf#vim#ag(query,...)
   if type(a:query) != s:TYPE.string
     return s:warn('Invalid query argument')
   endif
-  let query = a:query . ' ' . fzf#shellescape('^(?=.)')
-  "echom query
+  let query = a:query == '' ? fzf#shellescape('^(?=.)') : a:query
+  " echom l:query
   return call('fzf#vim#ag_raw', [query])
 endfunction
 
@@ -669,11 +669,13 @@ function! fzf#vim#ag_raw(command_suffix, ...)
   if !executable('ag')
     return s:warn('ag is not found')
   endif
+  " echom a:command_suffix
   return call('fzf#vim#grep', extend(['ag --ignore tags --nogroup --column --color '.a:command_suffix, 1], a:000))
 endfunction
 
 " command, with_column, [options]
 function! fzf#vim#grep(grep_command, with_column, ...)
+  " echom grep_command
   let words = []
   for word in split(a:grep_command)
     if word !~# '^[a-z]'
@@ -689,7 +691,7 @@ function! fzf#vim#grep(grep_command, with_column, ...)
   \ 'column':  a:with_column,
   \ 'options': ['--ansi', '--prompt', capname.'> ',
   \             '--multi', '--bind', 'alt-a:select-all,alt-d:deselect-all',
-  \             '--nth=2..',
+  \             '--nth=2..','--delimiter=:',
   \             '--color', 'hl:68,hl+:110']
   \}
   function! opts.sink(lines)
